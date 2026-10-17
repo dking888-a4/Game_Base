@@ -7,6 +7,7 @@ class AlienInvasion:
 
     def __init__(self):
         pygame.init()
+        self.clock = pygame.time.Clock()
 
         self.screen = pygame.display.set_mode((1200, 800))
         pygame.display.set_caption("Alien Invasion")
@@ -20,9 +21,13 @@ class AlienInvasion:
                 if event.type == pygame.QUIT:
                     sys.exit()
 
+            # Make the most recently drawn screen visible
+            pygame.display.flip()
+            self.clock.tic(60)
+            
+
 if __name__ == "__main__":
     # make a game instance and run the game.
     ai = AlienInvasion()
     ai.run_game()
 
-    
