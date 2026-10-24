@@ -55,7 +55,7 @@ class AlienInvasion:
         """ Respond to bullet-alien collisions. """
 
         # Remove and bullets and aliens that have collided
-        
+
         collisions = pygame.sprite.groupcollide(
             self.bullets, self.aliens, True, True)
 
@@ -71,6 +71,11 @@ class AlienInvasion:
 
         self._check_fleet_edges()
         self.aliens.update()
+
+        # Look for alien-ship collisions
+        if pygame.sprite.spritecollideany(self.ship, self.aliens):
+            print("Ship hit!!")
+        
 
     def _check_fleet_edges(self):
         """ Respond appropriately if any aliens have reached
