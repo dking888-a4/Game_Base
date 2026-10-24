@@ -26,6 +26,8 @@ class AlienInvasion:
         # Create an instance to store game statistics. 
         self.stats = GameStats(self)
 
+        # Start Alien Invasion in an active state.
+        self.game_active = True
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
@@ -39,9 +41,12 @@ class AlienInvasion:
 
         while True:
             self._check_events()
-            self.ship.update()
-            self._update_bullets()
-            self._update_aliens()
+
+            if self.game_active:
+                self.ship.update()
+                self._update_bullets()
+                self._update_aliens()
+            
             self._update_screen()
             self.clock.tick(60)
 
@@ -57,6 +62,7 @@ class AlienInvasion:
 
         self._check_bullet_alien_collisions()
 
+    
     def _check_bullet_alien_collisions(self):
         """ Respond to bullet-alien collisions. """
 
@@ -69,7 +75,6 @@ class AlienInvasion:
             # Destroy existing bullets and create a new fleet.
             self.bullets.empty()
             self._create_fleet()
-
 
 
     def _update_aliens(self):
@@ -95,6 +100,7 @@ class AlienInvasion:
                 self._change_fleet_direction()
                 break
     
+    
     def _change_fleet_direction(self):
         """ Drop entire fleet and change the fleet's direction. """
 
@@ -103,6 +109,7 @@ class AlienInvasion:
 
         self.settings.fleet_direction *= -1
 
+    
     def _check_alien_bottom(self):
         """ Check if any aliens have reached the bottom of the screen. """
         
@@ -112,8 +119,6 @@ class AlienInvasion:
                 self._ship_hit()
                 break
         
-
-
 
     def _create_fleet(self):
         """ Create the fleet of aliens. """
@@ -147,8 +152,6 @@ class AlienInvasion:
         self.aliens.add(new_alien)
 
 
-
-
     def _check_events(self):
         """ Respond to keyboard and mouse events. """
 
@@ -160,6 +163,7 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
  
+    
     def _check_keydown_events(self, event):
         """ Respond to keypresses. """
         
@@ -174,6 +178,7 @@ class AlienInvasion:
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
 
+    
     def _check_keyup_events(self, event):
         """ Respond to key releases. """
 
@@ -182,6 +187,7 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    
     def _fire_bullet(self):
         """ Create a new bullet and add it to the bullets group. """
 
@@ -189,6 +195,7 @@ class AlienInvasion:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
+    
     def _update_screen(self):
         """ Update images on the screen, and flip to the new screen """
 
@@ -201,27 +208,28 @@ class AlienInvasion:
         # Make the most recently drawn screen visible
         pygame.display.flip()
 
+    
     def _ship_hit(self):
         """ Respond to the ship being hit by an alien. """
 
-        # Decrement ships_left
-        self.stats.ships_left -= 1
+        if self.stats.ships_left > 0:
+            # Decrement ships_left
+            self.stats.ships_left -= 1
 
-        # Get rid of any remaining bullets and aliens. 
-        self.bullets.empty()
-        self.aliens.empty()
+            # Get rid of any remaining bullets and aliens. 
+            self.bullets.empty()
+            self.aliens.empty()
 
-        # Create a new fleet and center the ship
-        self._create_fleet()
-        self.ship.center_ship()
+            # Create a new fleet and center the ship
+            self._create_fleet()
+            self.ship.center_ship()
 
-        # Pause.
-        sleep(0.5)
+            # Pause.
+            sleep(0.5)
+        else:
+            self.game_active = False
+
     
-
-
-
-
 
 if __name__ == "__main__":
     # make a game instance and run the game.
